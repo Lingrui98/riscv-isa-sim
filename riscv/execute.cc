@@ -1,5 +1,6 @@
 // See LICENSE for license details.
 
+#include "papi.h"
 #include "processor.h"
 #include "mmu.h"
 #include "disasm.h"
@@ -221,6 +222,49 @@ bool processor_t::slow_path()
 // fetch/decode/execute loop
 void processor_t::step(size_t n)
 {
+  /* Initialize the PAPI library */
+
+  if (PAPI_library_init(PAPI_VER_CURRENT) != PAPI_VER_CURRENT)
+
+  exit(1);
+
+  /* Create an EventSet */
+
+  int EventSet = PAPI_NULL;
+
+  int retval = PAPI_create_eventset (&EventSet);
+
+  assert(retval==PAPI_OK);
+
+  /* Add an event*/
+
+  // retval = PAPI_add_event(EventSet, PAPI_L3_TCM);
+
+  // assert(retval==PAPI_OK);
+
+  /*Add another event*/
+
+  retval = PAPI_add_event(EventSet, PAPI_BR_TKN);
+
+  assert(retval==PAPI_OK);
+
+  /* Start counting events */
+
+  if (PAPI_start(EventSet) != PAPI_OK)
+
+  retval = PAPI_start (EventSet);
+
+  assert(retval==PAPI_OK);
+
+  long long values1[2];
+
+  long long values2[2];
+
+  PAPI_read(EventSet, values1);
+
+  assert(retval==PAPI_OK);
+
+
   if (!state.debug_mode) {
     if (halt_request == HR_REGULAR) {
       enter_debug_mode(DCSR_CAUSE_DEBUGINT);
@@ -351,4 +395,26 @@ void processor_t::step(size_t n)
     state.minstret->bump(instret);
     n -= instret;
   }
+
+  retval = PAPI_stop (EventSet,values2);
+
+  assert(retval==PAPI_OK);
+
+  printf("BRANCH_TAKEN:%d\n", values2[0]-values1[0]);
+
+  /* Clean up EventSet */
+
+  if (PAPI_cleanup_eventset(EventSet) != PAPI_OK)
+
+    exit(-1);
+
+  /* Destroy the EventSet */
+
+  if (PAPI_destroy_eventset(&EventSet) != PAPI_OK)
+
+    exit(-1);
+
+  /* Shutdown PAPI */
+
+  PAPI_shutdown();
 }
