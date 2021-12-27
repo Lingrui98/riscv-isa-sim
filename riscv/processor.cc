@@ -1763,11 +1763,11 @@ insn_func_t processor_t::decode_insn(insn_t insn)
   size_t idx = insn.bits() % OPCODE_CACHE_SIZE;
   insn_desc_t desc = opcode_cache[idx];
 
-  if (unlikely(insn.bits() != desc.match || !(xlen == 64 ? desc.rv64 : desc.rv32))) {
+  if (unlikely(insn.bits() != desc.match || !desc.rv64)) {
     // fall back to linear search
     int cnt = 0;
     insn_desc_t* p = &instructions[0];
-    while ((insn.bits() & p->mask) != p->match || !(xlen == 64 ? p->rv64 : p->rv32))
+    while ((insn.bits() & p->mask) != p->match || !p->rv64)
       p++, cnt++;
     desc = *p;
 
@@ -1784,7 +1784,7 @@ insn_func_t processor_t::decode_insn(insn_t insn)
     opcode_cache[idx].match = insn.bits();
   }
 
-  return xlen == 64 ? desc.rv64 : desc.rv32;
+  return desc.rv64;
 }
 
 void processor_t::register_insn(insn_desc_t desc)
@@ -1839,12 +1839,12 @@ void processor_t::register_base_instructions()
   #undef DECLARE_INSN
 
   #define DEFINE_INSN(name) \
-    extern reg_t rv32_##name(processor_t*, insn_t, reg_t); \
+    /*extern reg_t rv32_##name(processor_t*, insn_t, reg_t);*/ \
     extern reg_t rv64_##name(processor_t*, insn_t, reg_t); \
     register_insn((insn_desc_t){ \
       name##_match, \
       name##_mask, \
-      (name##_arch_en & 32) ? rv32_##name : nullptr, \
+      /*(name##_arch_en & 32) ? rv32_##name : */nullptr, \
       (name##_arch_en & 64) ? rv64_##name : nullptr});
   #include "insn_list.h"
   #undef DEFINE_INSN
