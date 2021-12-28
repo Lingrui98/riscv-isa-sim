@@ -605,10 +605,7 @@ void processor_t::take_interrupt(reg_t pending_interrupts)
 
 static int xlen_to_uxl(int xlen)
 {
-  if (xlen == 32)
-    return 1;
-  if (xlen == 64)
-    return 2;
+  return 2;
   abort();
 }
 
@@ -986,10 +983,7 @@ void processor_t::set_csr(int which, reg_t val)
     }
     case CSR_MINSTRET:
     case CSR_MCYCLE:
-      if (xlen == 32)
-        state.minstret = (state.minstret >> 32 << 32) | (val & 0xffffffffU);
-      else
-        state.minstret = val;
+      state.minstret = val;
       // The ISA mandates that if an instruction writes instret, the write
       // takes precedence over the increment to instret.  However, Spike
       // unconditionally increments instret after executing an instruction.
@@ -1402,8 +1396,6 @@ reg_t processor_t::get_csr(int which, insn_t insn, bool write, bool peek)
   }
   if (which >= CSR_MHPMCOUNTER3 && which <= CSR_MHPMCOUNTER31)
     ret(0);
-  if (xlen == 32 && which >= CSR_MHPMCOUNTER3H && which <= CSR_MHPMCOUNTER31H)
-    ret(0);
   if (which >= CSR_MHPMEVENT3 && which <= CSR_MHPMEVENT31)
     ret(0);
 
@@ -1476,8 +1468,6 @@ reg_t processor_t::get_csr(int which, insn_t insn, bool write, bool peek)
       ret(state.minstret >> 32);
     case CSR_MINSTRETH:
     case CSR_MCYCLEH:
-      if (xlen == 32)
-        ret(state.minstret >> 32);
       break;
     case CSR_SCOUNTEREN: ret(state.scounteren);
     case CSR_MCOUNTEREN:
@@ -1562,8 +1552,6 @@ reg_t processor_t::get_csr(int which, insn_t insn, bool write, bool peek)
     }
     case CSR_MSTATUS: ret(state.mstatus);
     case CSR_MSTATUSH:
-      if (xlen == 32)
-        ret((state.mstatus >> 32) & (MSTATUSH_SBE | MSTATUSH_MBE));
       break;
     case CSR_MIP: ret(state.mip);
     case CSR_MIE: ret(state.mie);

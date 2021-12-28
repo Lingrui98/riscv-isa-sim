@@ -369,12 +369,6 @@ public:
         value = address;
       }
 
-      // We need this because in 32-bit mode sometimes the PC bits get sign
-      // extended.
-      if (xlen == 32) {
-        value &= 0xffffffff;
-      }
-
       switch (state.mcontrol[i].match) {
         case MATCH_EQUAL:
           if (value != state.tdata2[i])

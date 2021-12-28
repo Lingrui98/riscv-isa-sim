@@ -1319,19 +1319,11 @@ disassembler_t::disassembler_t(int xlen)
     }
   }
 
-  if (xlen == 32) {
-    DISASM_INSN("c.flw", c_flw, 0, {&rvc_fp_rs2s, &rvc_lw_address});
-    DISASM_INSN("c.flwsp", c_flwsp, 0, {&frd, &rvc_lwsp_address});
-    DISASM_INSN("c.fsw", c_fsw, 0, {&rvc_fp_rs2s, &rvc_lw_address});
-    DISASM_INSN("c.fswsp", c_fswsp, 0, {&rvc_fp_rs2, &rvc_swsp_address});
-    DISASM_INSN("c.jal", c_jal, 0, {&rvc_jump_target});
-  } else {
-    DISASM_INSN("c.ld", c_ld, 0, {&rvc_rs2s, &rvc_ld_address});
-    DISASM_INSN("c.ldsp", c_ldsp, 0, {&xrd, &rvc_ldsp_address});
-    DISASM_INSN("c.sd", c_sd, 0, {&rvc_rs2s, &rvc_ld_address});
-    DISASM_INSN("c.sdsp", c_sdsp, 0, {&rvc_rs2, &rvc_sdsp_address});
-    DISASM_INSN("c.addiw", c_addiw, 0, {&xrd, &rvc_imm});
-  }
+  DISASM_INSN("c.ld", c_ld, 0, {&rvc_rs2s, &rvc_ld_address});
+  DISASM_INSN("c.ldsp", c_ldsp, 0, {&xrd, &rvc_ldsp_address});
+  DISASM_INSN("c.sd", c_sd, 0, {&rvc_rs2s, &rvc_ld_address});
+  DISASM_INSN("c.sdsp", c_sdsp, 0, {&rvc_rs2, &rvc_sdsp_address});
+  DISASM_INSN("c.addiw", c_addiw, 0, {&xrd, &rvc_imm});
 
   // provide a default disassembly for all instructions as a fallback
   #define DECLARE_INSN(code, match, mask) \
