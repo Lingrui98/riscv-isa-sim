@@ -52,6 +52,34 @@ typedef struct { uint32_t v; } float32_t;
 typedef struct { uint64_t v; } float64_t;
 typedef struct { uint64_t v[2]; } float128_t;
 
+typedef union { uint32_t v; float f; } my_float_32_t;
+typedef union { uint64_t v; double f; } my_float_64_t;
+
+inline float32_t to_float32_t(float f) {
+   my_float_32_t temp = { .f = f };
+   float32_t res = { .v = temp.v };
+   return res;
+}
+inline float64_t to_float64_t(double f) {
+   my_float_64_t temp = { .f = f };
+   float64_t res = { .v = temp.v };
+   return res;
+}
+inline my_float_32_t to_myfloat32_t(float32_t v) {
+   my_float_32_t res = { .v = v.v };
+   return res;
+}
+inline my_float_64_t to_myfloat64_t(float64_t v) {
+   my_float_64_t res = { .v = v.v };
+   return res;
+}
+inline float to_float(float32_t v) {
+   return to_myfloat32_t(v).f;
+}
+inline double to_double(float64_t v) {
+   return to_myfloat64_t(v).f;
+}
+
 /*----------------------------------------------------------------------------
 | The format of an 80-bit extended floating-point number in memory.  This
 | structure must contain a 16-bit field named 'signExp' and a 64-bit field

@@ -73,9 +73,22 @@ float ## bits ## _t f ## bits ## _min( float ## bits ## _t a, float ## bits ## _
 }
 
 COMPARE_MAX(a, b, 16);
-COMPARE_MAX(a, b, 32);
-COMPARE_MAX(a, b, 64);
+
+// COMPARE_MAX(a, b, 32);
+// COMPARE_MAX(a, b, 64);
+float32_t f32_max( float32_t a, float32_t b ) {
+    return to_float(a) > to_float(b) ? a : b;
+}
+float64_t f64_max( float64_t a, float64_t b ) {
+    return to_double(a) > to_double(b) ? a : b;
+}
 
 COMPARE_MIN(a, b, 16);
-COMPARE_MIN(a, b, 32);
-COMPARE_MIN(a, b, 64);
+// COMPARE_MIN(a, b, 32);
+// COMPARE_MIN(a, b, 64);
+float32_t f32_min( float32_t a, float32_t b ) {
+    return to_float(a) < to_float(b) ? a : b;
+}
+float64_t f64_min( float64_t a, float64_t b ) {
+    return to_double(a) < to_double(b) ? a : b;
+}
