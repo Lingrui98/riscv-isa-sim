@@ -292,7 +292,7 @@ public:
       throw trap_store_access_fault((proc) ? proc->state.v : false, vaddr, 0, 0); // disallow SC to I/O space
   }
 
-  static const reg_t ICACHE_ENTRIES = 1024;
+  static const reg_t ICACHE_ENTRIES = 2048; //1024;
 
   inline size_t icache_index(reg_t addr)
   {
