@@ -213,22 +213,23 @@ static reg_t execute_insn(processor_t* p, reg_t pc, insn_fetch_t fetch)
 
 bool processor_t::slow_path()
 {
-  return debug || state.single_step != state.STEP_NONE || state.debug_mode;
+  // return debug || state.single_step != state.STEP_NONE || state.debug_mode;
+  return false;
 }
 
 // fetch/decode/execute loop
 void processor_t::step(size_t n)
 {
-  if (!state.debug_mode) {
-    if (halt_request == HR_REGULAR) {
-      enter_debug_mode(DCSR_CAUSE_DEBUGINT);
-    } else if (halt_request == HR_GROUP) {
-      enter_debug_mode(DCSR_CAUSE_GROUP);
-    } // !!!The halt bit in DCSR is deprecated.
-    else if (state.dcsr.halt) {
-      enter_debug_mode(DCSR_CAUSE_HALT);
-    }
-  }
+  // if (!state.debug_mode) {
+  //   if (halt_request == HR_REGULAR) {
+  //     enter_debug_mode(DCSR_CAUSE_DEBUGINT);
+  //   } else if (halt_request == HR_GROUP) {
+  //     enter_debug_mode(DCSR_CAUSE_GROUP);
+  //   } // !!!The halt bit in DCSR is deprecated.
+  //   else if (state.dcsr.halt) {
+  //     enter_debug_mode(DCSR_CAUSE_HALT);
+  //   }
+  // }
 
   while (n > 0) {
     size_t instret = 0;

@@ -1646,33 +1646,14 @@ reg_t processor_t::get_csr(int which, insn_t insn, bool write, bool peek)
     case CSR_TDATA3: ret(0);
     case CSR_DCSR:
       {
-        if (!state.debug_mode)
-          break;
-        uint32_t v = 0;
-        v = set_field(v, DCSR_XDEBUGVER, 1);
-        v = set_field(v, DCSR_EBREAKM, state.dcsr.ebreakm);
-        v = set_field(v, DCSR_EBREAKH, state.dcsr.ebreakh);
-        v = set_field(v, DCSR_EBREAKS, state.dcsr.ebreaks);
-        v = set_field(v, DCSR_EBREAKU, state.dcsr.ebreaku);
-        v = set_field(v, DCSR_STOPCYCLE, 0);
-        v = set_field(v, DCSR_STOPTIME, 0);
-        v = set_field(v, DCSR_CAUSE, state.dcsr.cause);
-        v = set_field(v, DCSR_STEP, state.dcsr.step);
-        v = set_field(v, DCSR_PRV, state.dcsr.prv);
-        ret(v);
+        break;
       }
     case CSR_DPC:
-      if (!state.debug_mode)
-        break;
-      ret(state.dpc & pc_alignment_mask());
+      break;
     case CSR_DSCRATCH0:
-      if (!state.debug_mode)
-        break;
-      ret(state.dscratch0);
+      break;
     case CSR_DSCRATCH1:
-      if (!state.debug_mode)
-        break;
-      ret(state.dscratch1);
+      break;
     case CSR_VSTART:
       require_vector_vs;
       if (!supports_extension('V'))
